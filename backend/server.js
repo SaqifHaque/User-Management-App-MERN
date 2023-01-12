@@ -6,11 +6,14 @@ import Connection from './database/db.js';
 import Routes from './routes/route.js';
 
 import Cors from 'cors';
+import bodyParser from 'body-parser';
 
 const app = express();
 
 dotenv.config();
 app.use(Cors());
+app.use(bodyParser.json({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.use('/', Routes);
