@@ -28,7 +28,7 @@ const Navbar = () => {
         <Header position='static'>
             <Toolbar>
                 <Tabs to="/"><Logo  src={logo} alt="logo" />Code Interview</Tabs>
-                <Tabs to="/"><Tabs>Home</Tabs></Tabs>
+                <Tabs to="/">Home</Tabs>
                 <Tabs to="/add-user">Add User</Tabs>
             </Toolbar>
         </Header>

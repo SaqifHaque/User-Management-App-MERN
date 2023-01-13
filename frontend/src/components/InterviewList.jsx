@@ -1,8 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-import { Delete } from  '@mui/icons-material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, styled } from '@mui/material';
+import { Delete, Edit} from  '@mui/icons-material';
 
-import { getUser } from "../service/api";
+import { deleteUser, getUsers, editUser } from "../service/api";
+
+import { useNavigate } from "react-router-dom";
+
+
+const EditIcon = styled(Edit)`
+    margin-left:10px;
+`
  
 const defaultValue = {
     name: '',
@@ -11,24 +18,33 @@ const defaultValue = {
     phone: ''
 }
 
+
 const InterviewList = () => {
     let [rows, setRows] = useState([defaultValue]);
 
+    const navigate = useNavigate();
+
     const getRows = async () => { 
-        return await getUser();
+        const data =  await getUsers();
+        console.log(data, "data");
+        setRows(data);
     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const data =  await getRows();
-            setRows(data);
-        };
-        
-        fetchData().catch(console.error);
+    const editUserDetails = async(userId) => {
+        navigate(`/edit/${userId}`);
+    }
+
+    const deleteUserDetails = async (userId) => {
+        await deleteUser(userId);
+        getRows();
+    }
+
+    useEffect(() => {     
+        getRows();
       }, [] )
 
     return (
-        <TableContainer component={Paper}>
+      <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -42,7 +58,7 @@ const InterviewList = () => {
           <TableBody>
             {rows.map((row) => (
               <TableRow
-                key={row._id}
+                key={row._id + row.name}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
@@ -51,7 +67,7 @@ const InterviewList = () => {
                 <TableCell align="left">{row.username}</TableCell>
                 <TableCell align="left">{row.email}</TableCell>
                 <TableCell align="left">{row.phone}</TableCell>
-                <TableCell align="left"><Delete /></TableCell>
+                <TableCell align="left"><Delete onClick={() => deleteUserDetails(row._id)}/> <EditIcon onClick={() => editUserDetails(row._id)} /></TableCell>
               </TableRow>
             ))}
           </TableBody>
